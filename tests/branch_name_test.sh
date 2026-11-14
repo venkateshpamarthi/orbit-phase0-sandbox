@@ -2,7 +2,8 @@
 # Test suite for scripts/branch_name.sh
 set -euo pipefail
 
-script="./scripts/branch_name.sh"
+repo_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+script="${BRANCH_NAME_SCRIPT:-$repo_root/scripts/branch_name.sh}"
 passed=0
 failed=0
 
@@ -127,6 +128,30 @@ test_case "Title '-n' is preserved" \
   "ven-15-n" \
   VEN-15 -n
 
+test_case "Newline in the title becomes a hyphen" \
+  "abc-15-line1-line2" \
+  ABC-15 $'line1\nline2'
+
+test_case "Newline in the issue id becomes a hyphen" \
+  "abc-15-add-helper" \
+  $'ABC\n15' "Add helper"
+
+test_case "Space in the issue id becomes a hyphen" \
+  "abc-15-add-helper" \
+  "ABC 15" "Add helper"
+
+test_case "Tilde in the issue id becomes a hyphen" \
+  "abc-1-x" \
+  ABC~1 x
+
+test_case "Dots in the issue id collapse to one hyphen" \
+  "abc-1-x" \
+  ABC..1 x
+
+test_case "Slash in the issue id becomes a hyphen" \
+  "abc-15-x" \
+  ABC/15 x
+
 echo "================================"
 echo "Test Results"
 echo "================================"
@@ -134,7 +159,7 @@ echo "Passed: $passed"
 echo "Failed: $failed"
 echo
 
-if [ $passed -gt 0 ]; then
+if [ $failed -eq 0 ]; then
   echo "✓ All tests passed!"
   exit 0
 else

@@ -11,6 +11,7 @@ fi
 # Run test suite
 echo "Running test suite..."
 ./tests/branch_name_test.sh
+./tests/runner_exit_test.sh
 
 echo
 echo "All checks passed!"
