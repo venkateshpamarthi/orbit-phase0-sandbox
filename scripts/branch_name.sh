@@ -8,6 +8,7 @@
 # - No leading or trailing hyphens
 # - Exits non-zero if issue ID is missing or title is empty
 # - A blank issue ID, or one that is only hyphens, counts as missing
+# - A title which normalises to nothing counts as empty
 #
 # Examples:
 #   ./scripts/branch_name.sh ABC-15 Add a branch name helper
@@ -57,12 +58,12 @@ fi
 # 6. Remove leading and trailing hyphens
 title_slug=$(printf '%s\n' "$title" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9]/ /g' | tr -s ' ' | sed 's/^ *//; s/ *$//' | tr ' ' '-' | sed 's/^-*//; s/-*$//')
 
-# Combine issue ID and title slug, handling empty title_slug
 if [ -z "$title_slug" ]; then
-  branch="${issue_id_lower}"
-else
-  branch="${issue_id_lower}-${title_slug}"
+  echo "Error: title is required" >&2
+  echo "Usage: $0 <issue-id> <title words...>" >&2
+  exit 1
 fi
+branch="${issue_id_lower}-${title_slug}"
 
 branch=$(printf '%s\n' "$branch" | sed 's/^-*//; s/-*$//')
 if [ -z "$branch" ]; then

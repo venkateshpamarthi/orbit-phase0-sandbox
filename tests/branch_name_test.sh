@@ -90,11 +90,8 @@ test_case "Leading/trailing special characters stripped" \
   "ven-1-update-readme" \
   VEN-1 "...Update README..."
 
-# Edge case 5: Title with only special characters becomes empty after cleaning
-# This is an interesting edge case - the script will produce just the issue-id with trailing hyphen
-test_case "Title with only special characters" \
-  "abc-0" \
-  ABC-0 "!!!"
+# Edge case 5: A title of only special characters normalises to nothing and is rejected
+test_error "Title with only special characters" ABC-0 "!!!"
 
 # Edge case 6: Very long title
 test_case "Very long title" \
@@ -110,9 +107,13 @@ test_case "Leading hyphen on issue ID is stripped" \
   "ven-15-add-helper" \
   -VEN-15 "Add helper"
 
-test_case "Trailing hyphen on issue ID is stripped when the title slug is empty" \
-  "abc" \
-  ABC- "!!!"
+test_error "Trailing hyphen on issue ID is stripped when the title slug is empty" ABC- "!!!"
+
+test_error "Empty-string title is rejected" ABC-1 ""
+
+test_error "Whitespace-only title is rejected" ABC-1 " "
+
+test_error "Whitespace-only issue ID is rejected" " " "Add helper"
 
 test_case "Trailing hyphen on issue ID does not produce a double hyphen" \
   "ven-15-add-helper" \
