@@ -6,7 +6,7 @@
 
 **Issue:** [VEN-15: Add AGENTS.md, ADR-0001, and a tested branch-name helper](https://linear.app/venkateshpamarthi/issue/VEN-15/add-agentsmd-adr-0001-and-a-tested-branch-name-helper)
 
-**Pull Request:** *(to be added after PR creation)*
+**Pull Request:** [#7: Add AGENTS.md, ADR-0001, and a tested branch-name helper](https://github.com/venkateshpamarthi/orbit-phase0-sandbox/pull/7)
 
 ## Context
 
