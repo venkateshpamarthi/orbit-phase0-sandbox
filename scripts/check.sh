@@ -2,6 +2,8 @@
 # CI check script: runs test suite and Phase 0 FAIL-file hook
 set -euo pipefail
 
+cd "$(dirname "${BASH_SOURCE[0]}")/.."
+
 # Phase 0 hook: fail if a file named FAIL exists in the repo root
 if [ -f FAIL ]; then
   echo "FAIL file present: failing on purpose"

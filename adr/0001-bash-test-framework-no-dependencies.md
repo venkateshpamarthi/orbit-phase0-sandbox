@@ -23,7 +23,7 @@ Key considerations:
 Implement the branch name helper and its test suite in bash with no additional CI dependencies.
 
 Specifically:
-- `scripts/branch_name.sh`: Pure bash implementation with no external dependencies
+- `scripts/branch_name.sh`: bash plus standard `tr` and `sed`, no extra CI dependencies
 - `tests/branch_name_test.sh`: Bash test runner with simple assertion helpers
 - `scripts/check.sh`: Updated to run the test suite while keeping the Phase 0 FAIL-file hook
 - `.github/workflows/ci.yml`: No changes needed; continues to run `./scripts/check.sh`
@@ -66,10 +66,4 @@ Specifically:
 
 ## Notes
 
-The test suite covers:
-- Normal title formatting with spaces and case
-- Invalid input rejection (missing issue ID, empty title)
-- The exact branch name for VEN-15
-- Six additional documented edge cases: punctuation, numbers, consecutive special characters, leading/trailing characters, special-character-only titles, and very long titles
-
-The FAIL-file hook is preserved and documented in `scripts/check.sh` as a Phase 0 feature.
+Test coverage lives in `tests/branch_name_test.sh` and `tests/runner_exit_test.sh`; see those files rather than this record.

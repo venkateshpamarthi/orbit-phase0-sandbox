@@ -16,7 +16,7 @@ This runs the test suite and performs other validation checks.
 
 Branch names follow this pattern: `<issue-id>-<hyphenated-title>`
 
-- Issue ID is lowercased and appears at the start
+- Issue ID is turned into a slug the same way as the title (lowercased, non-alphanumeric runs become a single hyphen) and appears at the start
 - Title is lowercased with non-alphanumeric characters replaced by single hyphens
 - No leading or trailing hyphens
 
