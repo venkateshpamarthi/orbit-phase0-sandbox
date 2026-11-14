@@ -13,19 +13,25 @@ test_case() {
   local expected="$2"
   shift 2
   
+  local stdout stderr
+  stderr="$(mktemp)"
   echo "TEST: $name"
-  if output=$("$script" "$@" 2>&1); then
-    if [ "$output" = "$expected" ]; then
+  if stdout="$("$script" "$@" 2>"$stderr")"; then
+    if [ -s "$stderr" ]; then
+      echo "  ✗ FAIL: unexpected stderr: '$(cat "$stderr")'"
+      failed=$((failed + 1))
+    elif [ "$stdout" = "$expected" ]; then
       echo "  ✓ PASS"
       passed=$((passed + 1))
     else
-      echo "  ✗ FAIL: expected '$expected', got '$output'"
+      echo "  ✗ FAIL: expected '$expected', got '$stdout'"
       failed=$((failed + 1))
     fi
   else
     echo "  ✗ FAIL: command exited with non-zero status"
     failed=$((failed + 1))
   fi
+  rm -f "$stderr"
   echo
 }
 
@@ -33,7 +39,7 @@ test_case() {
 test_error() {
   local name="$1"
   shift
-  
+
   echo "TEST: $name"
   if output=$("$script" "$@" 2>&1); then
     echo "  ✗ FAIL: expected non-zero exit, but command succeeded with: '$output'"

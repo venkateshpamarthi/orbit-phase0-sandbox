@@ -10,8 +10,9 @@ if [ -f FAIL ]; then
   exit 1
 fi
 
-# Run test suite
+# Run test suite. A caller-supplied helper must not replace the real script.
 echo "Running test suite..."
+unset BRANCH_NAME_SCRIPT
 ./tests/branch_name_test.sh
 ./tests/runner_exit_test.sh
 
