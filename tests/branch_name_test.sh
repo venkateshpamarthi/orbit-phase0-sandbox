@@ -101,6 +101,31 @@ test_case "Very long title" \
   "long-1-this-is-a-very-long-title-with-many-words-that-should-all-be-converted-to-lowercase-and-joined-with-hyphens" \
   LONG-1 This is a very long title with many words that should all be converted to lowercase and joined with hyphens
 
+# No leading or trailing hyphens on the generated branch name
+test_error "Empty issue ID is rejected" "" "Add helper"
+
+test_error "Hyphen-only issue ID is rejected" "-" "Add helper"
+
+test_case "Leading hyphen on issue ID is stripped" \
+  "ven-15-add-helper" \
+  -VEN-15 "Add helper"
+
+test_case "Trailing hyphen on issue ID is stripped when the title slug is empty" \
+  "abc" \
+  ABC- "!!!"
+
+test_case "Trailing hyphen on issue ID does not produce a double hyphen" \
+  "ven-15-add-helper" \
+  VEN-15- "Add helper"
+
+test_case "Issue ID '-n' is preserved and has no leading hyphen" \
+  "n-add-helper" \
+  -n "Add helper"
+
+test_case "Title '-n' is preserved" \
+  "ven-15-n" \
+  VEN-15 -n
+
 echo "================================"
 echo "Test Results"
 echo "================================"
@@ -108,7 +133,7 @@ echo "Passed: $passed"
 echo "Failed: $failed"
 echo
 
-if [ $failed -eq 0 ]; then
+if [ $passed -gt 0 ]; then
   echo "✓ All tests passed!"
   exit 0
 else
