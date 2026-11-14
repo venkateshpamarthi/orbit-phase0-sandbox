@@ -32,5 +32,17 @@ expect_fail "a mix of passes and failures (wrong output, exit 0)" "$tmp/wrong_ou
 printf '#!/usr/bin/env bash\n"%s" "$@" >&2\n' "$helper" > "$tmp/stderr_only"; chmod +x "$tmp/stderr_only"
 expect_fail "the branch name on stderr instead of stdout" "$tmp/stderr_only"
 
+# 5. Accepts invalid input: prints a name and exits 0 wherever the real helper rejects.
+printf '#!/usr/bin/env bash\n"%s" "$@" || { echo x; exit 0; }\n' "$helper" > "$tmp/accepts_invalid"; chmod +x "$tmp/accepts_invalid"
+expect_fail "invalid input accepted (rejection path)" "$tmp/accepts_invalid"
+
+# 6. Correct stdout but exit status 1 on success.
+printf '#!/usr/bin/env bash\n"%s" "$@" || exit $?\nexit 1\n' "$helper" > "$tmp/wrong_exit"; chmod +x "$tmp/wrong_exit"
+expect_fail "correct output but a non-zero exit (exit-status branch)" "$tmp/wrong_exit"
+
+# 7. Correct stdout and exit status, plus noise on stderr.
+printf '#!/usr/bin/env bash\n"%s" "$@"; s=$?\necho noise >&2\nexit $s\n' "$helper" > "$tmp/stderr_noise"; chmod +x "$tmp/stderr_noise"
+expect_fail "correct output plus stderr noise (stderr branch)" "$tmp/stderr_noise"
+
 [ $rc -eq 0 ] && echo "PASS: runner exit status is correct for all-pass and mixed results"
 exit $rc

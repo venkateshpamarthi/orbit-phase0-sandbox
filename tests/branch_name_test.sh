@@ -12,19 +12,20 @@ test_case() {
   local name="$1"
   local expected="$2"
   shift 2
-  
+
   local stdout stderr
   stderr="$(mktemp)"
   echo "TEST: $name"
-  if stdout="$("$script" "$@" 2>"$stderr")"; then
+  # The trailing x keeps the helper's trailing newlines visible, so stdout must be exactly one line.
+  if stdout="$("$script" "$@" 2>"$stderr"; s=$?; printf x; exit $s)"; then
     if [ -s "$stderr" ]; then
       echo "  ✗ FAIL: unexpected stderr: '$(cat "$stderr")'"
       failed=$((failed + 1))
-    elif [ "$stdout" = "$expected" ]; then
+    elif [ "$stdout" = "${expected}"$'\n'x ]; then
       echo "  ✓ PASS"
       passed=$((passed + 1))
     else
-      echo "  ✗ FAIL: expected '$expected', got '$stdout'"
+      echo "  ✗ FAIL: expected exactly one stdout line '$expected', got '${stdout%x}'"
       failed=$((failed + 1))
     fi
   else
