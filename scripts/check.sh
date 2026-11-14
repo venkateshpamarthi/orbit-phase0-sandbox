@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-# Phase 0 CI check: fails if a file named FAIL exists in the repo root.
+# CI check script: runs test suite and Phase 0 FAIL-file hook
 set -euo pipefail
+
+# Phase 0 hook: fail if a file named FAIL exists in the repo root
 if [ -f FAIL ]; then
   echo "FAIL file present: failing on purpose"
   exit 1
 fi
-echo "check passed"
+
+# Run test suite
+echo "Running test suite..."
+./tests/branch_name_test.sh
+
+echo
+echo "All checks passed!"
